@@ -5,6 +5,8 @@ import {
   isPointInPolygon,
 } from "geolib";
 
+import { pubsub } from './index'
+
 const UPDATE_INTERVAL_MS = 1000;
 const CAR_SPEED_METERSPERMS = 8 / 1000.;
 const MAX_CAR_DISTANCE_PER_UPDATE_INTERVAL_METERS =
@@ -47,7 +49,10 @@ function startPublishingLocationUpdates() {
         );
       }
     });
-
+    pubsub.publish('car', {
+      car: cars
+    })
+    // console.log('NOW', cars)
     // At this point the locations of the cars have been updated.
     // It would make sense to broadcast this update somehow.
     // See https://www.apollographql.com/docs/apollo-server/data/subscriptions/#the-pubsub-class

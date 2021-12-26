@@ -12,8 +12,24 @@ const app = express();
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
+  type Coordinates {
+    latitude: Float
+    longitude: Float
+  }
+
+  type Car {
+    id: String
+    location: Coordinates
+    destination: Coordinates
+    distanceToDestination: Int
+  }
+
   type Query {
     hello: String
+  }
+
+  type Subscription {
+    car: [Car]
   }
 
   # This is where you should add types to the schema to describe a car and its location
@@ -21,10 +37,18 @@ const typeDefs = gql`
   # See https://www.apollographql.com/docs/apollo-server/data/subscriptions/#schema-definition
 `;
 
+export const pubsub = new PubSub()
 // Provide resolver functions for your schema fields
 const resolvers = {
+
   Query: {
-    hello: () => "Hello world!",
+    hello: () => "Hello world!" 
+  },
+
+  Subscription: {
+    car: {
+      subscribe: () => pubsub.asyncIterator('car')
+    }
   },
   
   // This is where you should add a resolver for the Subscription defined above.
@@ -34,7 +58,6 @@ const resolvers = {
 
 // This initializes the simulation of car locations. You may need to add arguments to this call.
 startPublishingLocationUpdates();
-
 
 // Below is boilerplate to initialize Apollo and the http and subscription servers.
 // You should not need to edit anything below this point.
@@ -68,7 +91,7 @@ async function startServer() {
   );
 
   httpServer.listen(4000, '0.0.0.0', function () {
-    console.log(`server running on port 4000`);
+    console.log(`server running on port 000`);
     console.log(`gql path is ${apolloServer!.graphqlPath}`);
   });
 
